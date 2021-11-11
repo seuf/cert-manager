@@ -30,6 +30,7 @@ import (
 
 	apiutil "github.com/jetstack/cert-manager/pkg/api/util"
 	cmapi "github.com/jetstack/cert-manager/pkg/apis/certmanager/v1"
+	v1 "github.com/jetstack/cert-manager/pkg/apis/certmanager/v1"
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
 	utilpki "github.com/jetstack/cert-manager/pkg/util/pki"
 )
@@ -184,7 +185,12 @@ func (s *SecretsManager) setValues(crt *cmapi.Certificate, secret *corev1.Secret
 				return fmt.Errorf("JKS keystore password Secret contains no data for key %q", ref.Key)
 			}
 			pw := pwSecret.Data[ref.Key]
-			keystoreData, err := encodeJKSKeystore(pw, data.PrivateKey, data.Certificate, data.CA)
+			alias := v1.DefaultJKSAlias
+			if crt.Spec.Keystores.JKS.Alias != "" {
+				alias = crt.Spec.Keystores.JKS.Alias
+			}
+			fmt.Printf("Alias configured : %s", crt.Spec.Keystores.JKS.Alias)
+			keystoreData, err := encodeJKSKeystore(pw, data.PrivateKey, data.Certificate, data.CA, alias)
 			if err != nil {
 				return fmt.Errorf("error encoding JKS bundle: %w", err)
 			}

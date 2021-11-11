@@ -87,7 +87,7 @@ func encodePKCS12Truststore(password string, caPem []byte) ([]byte, error) {
 	return pkcs12.EncodeTrustStore(rand.Reader, cas, password)
 }
 
-func encodeJKSKeystore(password []byte, rawKey []byte, certPem []byte, caPem []byte) ([]byte, error) {
+func encodeJKSKeystore(password []byte, rawKey []byte, certPem []byte, caPem []byte, alias string) ([]byte, error) {
 	// encode the private key to PKCS8
 	key, err := pki.DecodePrivateKeyBytes(rawKey)
 	if err != nil {
@@ -112,7 +112,7 @@ func encodeJKSKeystore(password []byte, rawKey []byte, certPem []byte, caPem []b
 	}
 
 	ks := jks.New()
-	ks.SetPrivateKeyEntry("certificate", jks.PrivateKeyEntry{
+	ks.SetPrivateKeyEntry(alias, jks.PrivateKeyEntry{
 		CreationTime:     time.Now(),
 		PrivateKey:       keyDER,
 		CertificateChain: certs,

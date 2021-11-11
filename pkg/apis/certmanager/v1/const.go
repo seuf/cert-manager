@@ -41,3 +41,8 @@ const (
 	// left as the default, `/v1/auth/kubernetes/login` will be called.
 	DefaultVaultKubernetesAuthMountPath = "/v1/auth/kubernetes"
 )
+
+const (
+	// Default certificate alias in JKS keystore
+	DefaultJKSAlias = "certificate"
+)
